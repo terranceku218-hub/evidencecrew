@@ -39,7 +39,7 @@ EvidenceCrew 给它们**角色**，给每一次交接一个**经过验证的信�
 而且下面那个演示完全离线就能跑，不需要任何账号。
 
 ```bash
-git clone <this-repo> evidencecrew
+git clone https://github.com/terranceku218-hub/evidencecrew.git evidencecrew
 cd evidencecrew
 npm install            # 立即完成：零依赖
 npm run setup          # 告诉你还缺什么

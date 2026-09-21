@@ -29,7 +29,7 @@ no-op and there is no lockfile to audit, because there are no dependencies.
 ### 1. Clone (10 seconds)
 
 ```bash
-git clone <this-repo> evidencecrew
+git clone https://github.com/terranceku218-hub/evidencecrew.git evidencecrew
 cd evidencecrew
 ```
 

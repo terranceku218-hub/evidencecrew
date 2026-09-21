@@ -111,7 +111,7 @@ Read more: [`docs/EVIDENCE.md`](docs/EVIDENCE.md).
 **Node.js 18 or later. That is the only thing you must already have.** Nothing to install, no lockfile to audit, and no account needed to see the product work - the demo further down runs offline.
 
 ```bash
-git clone <this-repo> evidencecrew
+git clone https://github.com/terranceku218-hub/evidencecrew.git evidencecrew
 cd evidencecrew
 npm install            # completes immediately: zero dependencies
 npm run setup          # tells you exactly what is missing, if anything

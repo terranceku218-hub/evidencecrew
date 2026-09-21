@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T08:41:55.386Z",
+  "generated_at": "2026-09-21T08:43:17.438Z",
   "frozen_for": "v0.1.0 Early Access release candidate (V0.3.3 guided goals + beginner UX)",
   "product": "EvidenceCrew",
   "version": "0.1.0",
@@ -12,7 +12,7 @@
   ],
   "note": "Byte-for-byte inventory of the release candidate. Runtime output, the live project registry, per-installation project state and this file itself are excluded on purpose. Regenerate with tools/TREE_MANIFEST.json's generator; verify with `node tools/check-tree-manifest.js`.",
   "files_count": 134,
-  "bytes_total": 2738808,
+  "bytes_total": 2739208,
   "files": [
     {
       "file": ".gitignore",
@@ -46,13 +46,13 @@
     },
     {
       "file": "README.md",
-      "bytes": 22958,
-      "sha256": "095bb1ead0062980aa6574ece0163896fba7b7fba958a489b879f0709e30ce09"
+      "bytes": 23000,
+      "sha256": "84cf10b9f8738cc8248493a0f3115e00d9645140b80f39834515f9726fccc099"
     },
     {
       "file": "README.zh-CN.md",
-      "bytes": 15242,
-      "sha256": "a99e25f7aba0bfe87afff4e53721cdb253738110ff39dfb41f6479ae3e9a8ccb"
+      "bytes": 15284,
+      "sha256": "832fe4167b510fac23f3473d560d81c44ea17021bfeb5a52a73c7aa87b361f11"
     },
     {
       "file": "SECURITY.md",
@@ -96,8 +96,8 @@
     },
     {
       "file": "docs/QUICKSTART.md",
-      "bytes": 8191,
-      "sha256": "43508cd93377dbbcd47c601f2268ab1fbd9cb57acb7354b19b7b62a34c6b6a94"
+      "bytes": 8233,
+      "sha256": "032bba8eac0e5f5948fbdb60cf24ab26fe226ca9dbd0604faf42dcb6df22616b"
     },
     {
       "file": "docs/RELEASE_CHECKLIST.md",
@@ -196,8 +196,8 @@
     },
     {
       "file": "package.json",
-      "bytes": 2280,
-      "sha256": "f9796f43b676f515550e4f6576298ea12798d961da9b34931196d8f84cff7c93"
+      "bytes": 2554,
+      "sha256": "226c225f3af0724ab3d9e1192bf4a0635267fca9195cb23f237ec10e4f7718c4"
     },
     {
       "file": "runtime/harness/README.md",
