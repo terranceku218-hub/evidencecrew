@@ -92,6 +92,15 @@ evidence/
 
 # ---- generated and temporary -------------------------------------------------------
 node_modules/
+# `npm install` writes a lockfile even though this project has NO dependencies, so it appears on a machine that
+# has never run npm before and did not exist while the tree was being audited. It is generated, regenerable in
+# one command, and carries nothing a reader needs: committing it would add a file that contradicts the
+# zero-dependency claim in the README, and leaving it untracked-and-unignored made `git status` dirty and made
+# the shipped `tools/check-tree-manifest.js` report the tree as changed on a clone that was perfectly correct.
+# MEASURED: a fresh clone plus `npm install` produced an untracked 298-byte package-lock.json and one "added"
+# file in the integrity check.
+package-lock.json
+npm-shrinkwrap.json
 tasks.json.tmp-*
 *.tmp
 *.tmp-*

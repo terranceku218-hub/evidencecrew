@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T08:43:17.438Z",
+  "generated_at": "2026-09-21T08:46:33.232Z",
   "frozen_for": "v0.1.0 Early Access release candidate (V0.3.3 guided goals + beginner UX)",
   "product": "EvidenceCrew",
   "version": "0.1.0",
@@ -11,13 +11,13 @@
     "ja"
   ],
   "note": "Byte-for-byte inventory of the release candidate. Runtime output, the live project registry, per-installation project state and this file itself are excluded on purpose. Regenerate with tools/TREE_MANIFEST.json's generator; verify with `node tools/check-tree-manifest.js`.",
-  "files_count": 134,
-  "bytes_total": 2739208,
+  "files_count": 135,
+  "bytes_total": 2740233,
   "files": [
     {
       "file": ".gitignore",
-      "bytes": 3688,
-      "sha256": "291199526fd57f4c2506385a6720666114b4fd6f0bb9bc313bcc18ba4309d025"
+      "bytes": 4415,
+      "sha256": "01523544f09ea400e9361d805ce51b09ab395402005cc53597107f1e114efe8a"
     },
     {
       "file": "CHANGELOG.md",
@@ -193,6 +193,11 @@
       "file": "examples/demo-project/test/pulse.test.js",
       "bytes": 6921,
       "sha256": "07bd48ca9c38e07079171495adc1fff1ae5bfd07a83523ef67ee194312b4d461"
+    },
+    {
+      "file": "package-lock.json",
+      "bytes": 298,
+      "sha256": "ec0a78911c9f194c85a9aa41262da6ea90a2605f084ffee8de19d0c14fc44e2d"
     },
     {
       "file": "package.json",
