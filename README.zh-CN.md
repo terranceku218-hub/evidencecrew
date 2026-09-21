@@ -7,7 +7,7 @@
 > 你订阅的 AI 已经是一支团队了。
 > 给它们角色、席位（Seat）和收据。
 
-[English](README.md) | **简体中文**
+[English](./README.md) · [简体中文](./README.zh-CN.md)
 
 ---
 

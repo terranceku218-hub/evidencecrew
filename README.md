@@ -1,11 +1,17 @@
 # EvidenceCrew
 
-**Verifiable Multi-Agent Workbench**
+**Verifiable Multi-Agent Workbench · 可验证的多智能体协作工作台**
 
-**DeepSeek plans. ChatGPT works. Codex reviews when you want it. Evidence proves what happened.**
+[English](./README.md) · [简体中文](./README.zh-CN.md)
 
-> Your AI subscriptions are already an agent team.
-> Give them roles, seats, and receipts.
+> **Your AI subscriptions are already an agent team. Give them roles, seats, and receipts.**
+> **你已经拥有多个 AI，把它们组成一个有分工、有边界、有证据的协作团队。**
+
+**EvidenceCrew is a local workbench that lets DeepSeek, ChatGPT, Codex and other AI providers work
+together as an accountable agent team.**
+
+**EvidenceCrew 是一个本地运行的多智能体工作台，让 DeepSeek、ChatGPT、Codex 等 AI 以明确角色协作，
+并为每次任务留下可验证的执行证据。**
 
 ```
 +---------------------------------------------------------------+
@@ -27,13 +33,17 @@
 +---------------------------------------------------------------+
 ```
 
+The four roles: **DeepSeek plans. · ChatGPT works. · Codex reviews when you want it. · Evidence proves what
+happened.**
+四个角色：**DeepSeek 负责规划。 · ChatGPT 负责执行。 · Codex 可按需独立审查。 · Evidence 证明实际发生了什么。**
+
 <!-- The first image is the interface, in the language this README is written in.
      See docs/SCREENSHOTS.md for the full set, including the Chinese interface. -->
-**Goal and Agent Team:**
+**Goal and Agent Team · 目标与智能体团队:**
 
 ![EvidenceCrew: the goal area and the agent team](docs/screenshots/05-ui-main-en.png)
 
-**The receipt, which is the point:**
+**The receipt, which is the point · 收据才是重点:**
 
 ![EvidenceCrew: a VERIFIED Evidence Record](docs/screenshots/03-evidence-verified.png)
 
@@ -42,7 +52,65 @@ A 30-second recording of the whole flow is storyboarded in [`docs/DEMO.md`](docs
 
 ---
 
-## What this is
+## Why EvidenceCrew? · 为什么使用 EvidenceCrew？
+
+Most AI tools tell you a task is **"done."**
+
+EvidenceCrew asks: **What actually happened? Who did it? What changed? What was really verified?**
+
+大多数 AI 工具只会告诉你：**「完成了。」**
+
+EvidenceCrew 更关心：**谁执行了任务？修改了什么？谁审查过？哪些验证真的执行过？哪些证据没有被记录？**
+
+It answers those from records, not from a summary written by the thing being judged: every dispatch carries a
+`run_id` and a source hash, the reply must echo them, and a field nobody filled in renders as **not recorded**
+rather than as a pass.
+
+它用记录来回答这些问题，而不是用被审查方自己写的总结：每次派发都带 `run_id` 与源码哈希，回复必须回显二者；
+没有任何人填写过的字段会显示为**未记录**，而不是显示为一个对勾。
+
+## Highlights · 核心功能
+
+| | |
+|---|---|
+| **Agent Seats** · 智能体席位 | Roles with their own provider, transport, conversation and permissions. · 每个角色都有自己的提供方、传输方式、会话与权限。 |
+| **Verified Task Protocol** · 可验证任务协议 | Every run is tied to the exact task and source revision it was dispatched against. · 每次运行都与它被派发时的任务和源码版本严格关联。 |
+| **Evidence Cards** · 证据卡片 | A receipt per task, including what was never recorded at all. · 每个任务一份收据，包括哪些内容从未被记录。 |
+| **Guided Goals** · 引导式目标 | Nine templates and four plain-language choices, with a preview before anything runs. · 九个模板、四个通俗选项，运行前先给你预览。 |
+| **Execution Intensity** · 执行强度 | `FAST` / `BALANCED` / `STRICT` control how many agent calls a run may spend. · 控制一次运行允许花掉多少次智能体调用。 |
+| **Four UI Languages** · 四语言界面 | 简体中文 (default), 繁體中文, English, 日本語. · 简体中文（默认）、繁體中文、English、日本語。 |
+
+Going deeper · 深入阅读: [`docs/AGENT_SEAT.md`](docs/AGENT_SEAT.md) ·
+[`docs/VERIFIED_TASK_PROTOCOL.md`](docs/VERIFIED_TASK_PROTOCOL.md) · [`docs/EVIDENCE.md`](docs/EVIDENCE.md) ·
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+
+## The workflow · 工作流程
+
+The box above is the whole product in one picture: a goal goes in, a team works on it, a receipt comes out.
+更具体地说：
+
+```
+Goal                               目标
+  |                                  |
+  v                                 v
+DeepSeek Supervisor       ->  DeepSeek 主管规划
+  |                                  |
+  v                                 v
+Tasks                     ->  拆分任务
+  |                                  |
+  v                                 v
+ChatGPT Worker            ->  ChatGPT 执行
+  |                                  |
+  v                                 v
+Review / Retry            ->  审查 / 重试
+  |                                  |
+  v                                 v
+Evidence                  ->  Evidence 验证记录
+```
+
+---
+
+## What this is · 这是什么
 
 A **local control plane for verifiable multi-agent work.**
 
@@ -68,9 +136,9 @@ produces an Evidence Record.
 
 ---
 
-## Why EvidenceCrew?
+## The three ideas in detail
 
-Three ideas. Each one has a document of its own; this is the short version.
+The bilingual summary above is the short version. This is what each idea actually is.
 
 ### 1. Agent Seats: your subscriptions become one accountable team
 
@@ -119,6 +187,10 @@ npm start              # -> http://127.0.0.1:3099
 ```
 
 Full detail, including what to do when something is missing, is in [`docs/QUICKSTART.md`](docs/QUICKSTART.md).
+
+**English documentation: continue reading this README.**
+
+**中文文档：[README.zh-CN.md](./README.zh-CN.md)** — 完整中文说明，不是本页的摘要。
 
 ### No git? Download the ZIP
 

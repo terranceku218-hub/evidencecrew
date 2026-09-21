@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T08:49:45.448Z",
+  "generated_at": "2026-09-21T09:09:19.519Z",
   "frozen_for": "v0.1.0 Early Access release candidate",
   "product": "EvidenceCrew",
   "version": "0.1.0",
@@ -12,7 +12,7 @@
   ],
   "note": "Byte-for-byte inventory of the release candidate. Runtime output, the live project registry, per-installation project state and this file itself are excluded on purpose. Regenerate with tools/TREE_MANIFEST.json's generator; verify with `node tools/check-tree-manifest.js`.",
   "files_count": 134,
-  "bytes_total": 2740290,
+  "bytes_total": 2744422,
   "files": [
     {
       "file": ".gitignore",
@@ -46,13 +46,13 @@
     },
     {
       "file": "README.md",
-      "bytes": 23000,
-      "sha256": "84cf10b9f8738cc8248493a0f3115e00d9645140b80f39834515f9726fccc099"
+      "bytes": 27112,
+      "sha256": "5942e00ee39fa00f8a5d9402e80d2c62f90384dd084449fe63f5c66640711463"
     },
     {
       "file": "README.zh-CN.md",
-      "bytes": 15284,
-      "sha256": "832fe4167b510fac23f3473d560d81c44ea17021bfeb5a52a73c7aa87b361f11"
+      "bytes": 15304,
+      "sha256": "f5d31358ea73063cced0c75889c4d1b33ffcc8a03939fcc2c5487106f9b44350"
     },
     {
       "file": "SECURITY.md",
