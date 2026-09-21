@@ -1,0 +1,32 @@
+name: "{{PROJECT_NAME}}"
+project_id: "{{PROJECT_ID}}"
+type: coding
+root: "{{ROOT_PATH}}"
+
+state_files:
+  project_state: PROJECT_STATE.md
+  tasks: TASKS.md
+  decisions: DECISIONS.md
+  known_issues: KNOWN_ISSUES.md
+  handoff: HANDOFF.md
+
+worker:
+  backend: chatgpt-web
+  role: coding
+  max_rounds: 8
+  reuse_conversation: true
+
+git:
+  enabled: true
+
+permissions:
+  file_read: true
+  file_write: true
+  shell: true
+  git: true
+  test: true
+  web: false
+
+validation:
+  require_review_before_write: true
+  require_diff_after_write: true

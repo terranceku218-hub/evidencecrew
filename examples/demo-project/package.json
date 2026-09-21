@@ -1,0 +1,14 @@
+{
+  "name": "demo-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tiny stand-in codebase used to demo verifiable multi-agent work: a health-bar damage flash helper with one deliberate bug.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node test/pulse.test.js",
+    "test:fixed": "node test/pulse.fixed.test.js"
+  }
+}

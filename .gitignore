@@ -1,0 +1,116 @@
+# =====================================================================================
+# What must never be committed.
+#
+# This file is a second line of defence, not the first. The first is
+# scripts/public-safety-scan.js, which reports the LOCATION and CLASS of anything that
+# looks like a credential without ever printing the matched value.
+#
+# The rule this file encodes: a real credential, a browser profile or a private project
+# must never enter the repository, in any branch, at any point in its history. A secret
+# that was committed and then deleted is still a secret that was committed - it lives in
+# the object database and in every clone and fork.
+# =====================================================================================
+
+# ---- credentials -------------------------------------------------------------------
+.credentials.yaml
+.credentials.yml
+credentials.yaml
+credentials.json
+auth.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+.env
+.env.*
+!.env.example
+*.token
+secrets.json
+
+# ---- browser state -----------------------------------------------------------------
+# One browser, one profile, one login. None of it belongs in a repository.
+profile/
+**/profile/
+user data/
+**/user data/
+.playwright/
+.playwright-cli/
+Cookies
+Cookies-journal
+Login Data
+Login Data-journal
+Web Data
+Local State
+Preferences
+Secure Preferences
+*.har
+
+# ---- this instance's own state -----------------------------------------------------
+.state/
+state/
+logs/
+*.log
+*.jsonl
+registry/
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+
+# The `logs/` and `registry/` entries above are ROOT-ANCHORED, and the bundled harness keeps its own logs
+# and project registry UNDER runtime/harness/ - so those two patterns never matched them. The staging tree
+# therefore carried runtime/harness/logs/harness.jsonl and runtime/harness/registry/projects.json, both of
+# which contain THIS machine's absolute project path, while .gitignore said the case was handled.
+# MEASURED, not assumed: the public safety scan reported exactly those two files as MEDIUM
+# (machine-specific absolute path) right after a demo project was registered. A registration also writes
+# examples/demo-project/.ai/, which the `.ai/` rule elsewhere in this file already covers.
+**/logs/
+**/registry/
+
+# ---- evidence records --------------------------------------------------------------
+# Evidence Records are real run output: they contain project paths, prompts, model
+# replies and sometimes diffs. They are the product of YOUR work, not source for the
+# project, and they are generated on first run.
+evidence/
+**/evidence/EV-*.json
+**/evidence/EV-*.md
+
+# ---- per-project installation state -------------------------------------------------
+# A project .ai directory is written when a project is registered with the harness. It holds
+# THIS machine absolute project path and that installation task history, and the harness
+# scaffolds it again on registration. Shipping one would publish a maintainer path and then
+# point a reader project at a directory that does not exist on their machine.
+.ai/
+**/.ai/
+
+# ---- generated and temporary -------------------------------------------------------
+node_modules/
+tasks.json.tmp-*
+*.tmp
+*.tmp-*
+temp/
+.tmp/
+tmp/
+*.orig
+*.rej
+
+# ---- editor and OS -----------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- private projects --------------------------------------------------------------
+# If you clone this next to a real project you are testing against, keep it out of the
+# workbench repository. The scanner cannot guess your project's name; you can.
+# /private/

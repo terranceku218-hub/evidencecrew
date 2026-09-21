@@ -1,0 +1,78 @@
+{
+  "$comment": [
+    "EvidenceCrew configuration. This is the UI and control layer ABOVE the harness.",
+    "",
+    "It holds NO business truth. Projects, workspaces, tasks, workers and Git remain owned by the",
+    "harness and by each project .ai directory. This file only says where those live and how the",
+    "workbench behaves.",
+    "",
+    "PATHS ARE RELATIVE TO THE REPOSITORY ROOT and are resolved by workbench/config.js, so a clone runs",
+    "from any directory. Environment variables can override each one; see docs/QUICKSTART.md."
+  ],
+  "workbench": {
+    "name": "evidencecrew",
+    "version": "0.1.0",
+    "description": "EvidenceCrew - a local control plane for verifiable multi-agent work."
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 3099,
+    "$comment_host": "Bind to loopback only. This is a local single-user tool and must not be reachable from the network."
+  },
+  "paths": {
+    "workbenchRoot": "workbench",
+    "publicDir": "workbench/public",
+    "logsDir": "logs",
+    "stateFile": ".state/workbench-state.json",
+    "harnessRoot": "runtime/harness",
+    "harnessCli": "runtime/harness/cli.js",
+    "$comment_state": "stateFile and logsDir are created on first run and are git-ignored. They hold this instance's own state, not project truth."
+  },
+  "jobs": {
+    "$comment": [
+      "A Goal runs as a background job so the UI stays responsive and Pause has something to act on.",
+      "Strictly single-concurrency: one job at a time, matching the harness serialised operation model.",
+      "turnTimeoutMs bounds how long the workbench waits for a ChatGPT turn before surfacing BLOCKED",
+      "instead of hanging."
+    ],
+    "maxConcurrent": 1,
+    "turnTimeoutMs": 600000,
+    "logRingSize": 500
+  },
+  "safety": {
+    "$comment": [
+      "Permanent rules for this layer, enforced in code rather than by convention. The workbench never",
+      "stores ChatGPT credentials or cookies, never reads another Chrome profile, and never runs a",
+      "destructive git command."
+    ],
+    "bindLoopbackOnly": true,
+    "neverStoreChatGptCredentials": true,
+    "neverReadOtherChromeProfiles": true,
+    "forbiddenGitCommands": [
+      "reset --hard",
+      "clean -fd",
+      "push --force",
+      "push -f",
+      "checkout -- .",
+      "restore ."
+    ],
+    "defaultAutonomyMode": "ADVISOR",
+    "requireProjectForFileOperations": true
+  },
+  "review": {
+    "$comment": [
+      "Is an INDEPENDENT REVIEWER wanted, and may the Codex seat be used?",
+      "",
+      "OFF       the supervisor reviews its own work. Records state review_level=SUPERVISOR_REVIEW and",
+      "          independent_review_status=DISABLED_BY_POLICY. OFF never blocks a goal: a configured",
+      "          choice is not a missing review, and the two are recorded differently on purpose.",
+      "ON        maps to AUTO: ask an independent provider only where a second opinion changes the",
+      "          outcome (coding, architecture, high-risk writes, disputed verdicts).",
+      "REQUIRED  always ask. Only meaningful while the Codex seat has quota.",
+      "",
+      "The UI toggle stores the RAW selection (ON stays ON); the server and the autonomous loop both",
+      "normalise it through protocol/policy.js. AWB_CODEX_MODE overrides this file for scripted runs."
+    ],
+    "codexReviewMode": "OFF"
+  }
+}

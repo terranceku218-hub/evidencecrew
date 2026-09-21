@@ -1,0 +1,270 @@
+{
+  "$comment": [
+    "CENTRAL SELECTOR REGISTRY -- the single source of truth for every ChatGPT DOM locator.",
+    "",
+    "HARD RULE: no selector may appear anywhere else. Not in the Supervisor prompt, not in",
+    "adapter/*.js, not in one-off shell commands. If a page change breaks something, exactly",
+    "one file gets edited. selector-audit.ps1 enforces this mechanically.",
+    "",
+    "STATUS VALUES",
+    "  candidate  -- plausible from documented semantics, NOT yet verified on the live page.",
+    "  verified   -- confirmed against the real logged-in page during PHASE 3.",
+    "  fallback   -- kept because a verified selector may regress; tried after verified ones.",
+    "  rejected   -- observed on the real page but unusable (ambiguous / unstable / absent).",
+    "",
+    "RESOLUTION: candidates are tried in array order; the first that matches wins, so",
+    "ordering encodes preference. PHASE 3 winners are moved to the front and marked verified.",
+    "",
+    "ENCODING: this file intentionally contains Chinese strings, because the ChatGPT UI",
+    "language follows the account locale and this deployment renders zh-CN. It must only",
+    "ever be written through UTF-8-safe tooling -- a Windows PowerShell Get-Content/Set-Content",
+    "round-trip uses the ANSI code page and destroys these strings irrecoverably.",
+    "",
+    "WHAT TO AVOID (enforced by selector-audit): no nth-child, no generated class hashes, no",
+    "coordinate-based targeting, no deep descendant chains."
+  ],
+  "version": 2,
+
+  "input": {
+    "purpose": "The message composer. A contenteditable ProseMirror div, NOT a textarea.",
+    "verifiedAt": "2026-09-17",
+    "candidates": [
+      { "kind": "css", "value": "#prompt-textarea", "status": "verified", "note": "PHASE 3: matched=1 visible=1; tag=div, class=ProseMirror, contenteditable=true" },
+      { "kind": "css", "value": "div.ProseMirror[contenteditable='true']", "status": "fallback", "note": "PHASE 3: matched=1 -- survives an id change" },
+      { "kind": "role", "role": "textbox", "name": "与 ChatGPT 聊天", "status": "fallback", "note": "aria-label on the live page (zh-CN UI)" },
+      { "kind": "role", "role": "textbox", "name": "Message ChatGPT", "status": "fallback", "note": "en-US equivalent" }
+    ],
+    "verify": "exists, visible, editable, and focuses"
+  },
+
+  "sendButton": {
+    "purpose": "Commits the composer contents as a user turn. EXISTS ONLY WHILE THE COMPOSER IS NON-EMPTY -- an empty composer renders no submit control at all.",
+    "verifiedAt": "2026-09-17",
+    "candidates": [
+      { "kind": "css", "value": "[data-testid='send-button']", "status": "verified", "note": "PHASE 3: appears only after text is entered; type=submit, aria-label=发送提示词" },
+      { "kind": "role", "role": "button", "name": "发送提示词", "status": "fallback", "note": "zh-CN aria-label" },
+      { "kind": "role", "role": "button", "name": "Send prompt", "status": "fallback", "note": "en-US aria-label" }
+    ],
+    "verify": "absent on an empty composer, present and enabled once text is entered"
+  },
+
+  "stopButton": {
+    "purpose": "PRIMARY 'still generating' signal. Present while streaming, absent once the turn settles.",
+    "verifiedAt": "2026-09-17",
+    "candidates": [
+      { "kind": "css", "value": "[data-testid='stop-button']", "status": "candidate", "note": "must be confirmed during an actual stream; not observable while idle" },
+      { "kind": "role", "role": "button", "name": "停止流式传输", "status": "candidate", "note": "zh-CN aria-label, unverified" },
+      { "kind": "role", "role": "button", "name": "Stop streaming", "status": "candidate", "note": "en-US aria-label, unverified" }
+    ],
+    "verify": "appears during generation and disappears on completion -- BOTH transitions must be observed"
+  },
+
+  "roleTextboxGroup": {
+    "purpose": "TAG CATEGORY (not an element selector): the tag set that can carry a textbox role.",
+    "tagGroup": "[contenteditable=true],textarea,input,[role=textbox]"
+  },
+
+  "roleButtonGroup": {
+    "purpose": "TAG CATEGORY (not an element selector): the tag set that can carry a button role.",
+    "tagGroup": "button,[role=button]"
+  },
+
+  "roleLinkGroup": {
+    "purpose": "TAG CATEGORY (not an element selector): the tag set that can carry a link role.",
+    "tagGroup": "a,[role=link]"
+  },
+
+  "streamingHint": {
+    "purpose": "Cheap secondary probe for 'still generating', combined with the stop button. Deliberately redundant so a single UI change cannot flip completion detection.",
+    "candidates": [
+      { "kind": "css", "value": "[data-testid='stop-button']", "status": "candidate" },
+      { "kind": "css", "value": "button[aria-label*='停止']", "status": "candidate", "note": "zh-CN" },
+      { "kind": "css", "value": "button[aria-label*='Stop']", "status": "candidate", "note": "en-US" }
+    ]
+  },
+
+  "stripFromVisibleText": {
+    "purpose": "Non-content nodes removed from a cloned document before its visible text is read. Without this, SVG path data and script/style bodies would pollute every text-based state match.",
+    "tagGroup": "script,style,noscript,svg,button[aria-hidden=true]"
+  },
+
+  "stripFromBody": {
+    "purpose": "UI chrome removed from a cloned assistant body before its text is extracted, so toolbars, copy/regenerate buttons and menu text cannot enter the transcript.",
+    "tagGroup": "button,[role=button],[aria-hidden=true],nav,menu"
+  },
+
+  "messages": {
+    "anyTurn": {
+      "purpose": "Any conversation turn container.",
+      "verifiedAt": "2026-09-17",
+      "candidates": [
+        { "kind": "css", "value": "[data-message-author-role]", "status": "verified", "note": "PHASE 3: matched=2 on a live 1-user/1-assistant conversation" },
+        { "kind": "css", "value": "[data-message-id]", "status": "fallback", "note": "PHASE 3: matched=2" },
+        { "kind": "css", "value": "article[data-testid^='conversation-turn']", "status": "rejected", "note": "PHASE 3: matched=0 - this UI revision does not use article[data-testid]" }
+      ]
+    },
+    "userTurn": {
+      "purpose": "User-authored turn.",
+      "verifiedAt": "2026-09-17",
+      "candidates": [
+        { "kind": "css", "value": "[data-message-author-role='user']", "status": "verified", "note": "PHASE 3: matched=1 visible=1" }
+      ]
+    },
+    "assistantTurn": {
+      "purpose": "Assistant-authored turn.",
+      "verifiedAt": "2026-09-17",
+      "candidates": [
+        { "kind": "css", "value": "[data-message-author-role='assistant']", "status": "verified", "note": "PHASE 3: matched=1 visible=1; turn is a div carrying data-message-id and data-message-model-slug" }
+      ]
+    }
+  },
+
+  "assistantBody": {
+    "purpose": "The readable markdown body INSIDE an assistant turn. Scoping to this avoids pulling toolbars, buttons and menu text into the transcript.",
+    "verifiedAt": "2026-09-17",
+    "candidates": [
+      { "kind": "css", "value": ".markdown", "status": "verified", "note": "PHASE 3: matched inside both turns; extracted 3217 chars from the live reply with formatting intact" },
+      { "kind": "css", "value": "[class*='markdown']", "status": "fallback", "note": "PHASE 3: matched=2" },
+      { "kind": "self", "value": "", "status": "fallback", "note": "last resort: the turn container's own text" }
+    ]
+  },
+
+  "newChat": {
+    "purpose": "Starts a fresh conversation (worker creation / rotation).",
+    "verifiedAt": "2026-09-17",
+    "candidates": [
+      { "kind": "css", "value": "[data-testid='create-new-chat-button']", "status": "verified", "note": "PHASE 3: matched=2 visible=2" },
+      { "kind": "role", "role": "link", "name": "New chat", "status": "fallback" },
+      { "kind": "role", "role": "link", "name": "新聊天", "status": "fallback", "note": "zh-CN" }
+    ],
+    "verify": "clicking it lands on a URL that is NOT /c/<id>"
+  },
+
+  "blockingStateText": {
+    "$comment": "STATE DETECTION BY VISIBLE TEXT, not by selector. These states change copy often and have no reliable DOM anchor, so they are matched against visible page text. Patterns are BILINGUAL because the ChatGPT UI language follows the account/locale, not the adapter -- a Chinese-locale signed-out page says the equivalent of 'log in', not 'Log in'.",
+    "loginRequired": {
+      "purpose": "Session expired or never established. Adapter must STOP; it never attempts to authenticate.",
+      "patterns": [
+        "Log in to ChatGPT",
+        "log in or sign up",
+        "Welcome back",
+        "Continue with Google",
+        "Continue with Apple",
+        "Continue with Microsoft",
+        "Continue with phone",
+        "Sign up or log in",
+        "Get started",
+        "登录即可",
+        "登录或注册",
+        "免费注册",
+        "欢迎回来",
+        "使用 Google 账户继续",
+        "使用 Microsoft 继续",
+        "使用 Apple 账户继续",
+        "使用电话号码继续",
+        "登录或创建账户",
+        "创建账户"
+      ]
+    },
+    "captcha": {
+      "purpose": "Human verification. Adapter must STOP immediately and hand off to the human.",
+      "patterns": [
+        "Verify you are human",
+        "verify you are a human",
+        "Checking your browser",
+        "Cloudflare",
+        "hCaptcha",
+        "reCAPTCHA",
+        "unusual activity",
+        "Confirm you are human",
+        "验证你是真人",
+        "人机验证",
+        "安全验证",
+        "确认你是人类",
+        "检测到异常活动"
+      ]
+    },
+    "rateLimit": {
+      "purpose": "Usage cap or throttling. Adapter must STOP rather than retry into a wall.",
+      "patterns": [
+        "You've reached",
+        "You have reached",
+        "usage limit",
+        "rate limit",
+        "try again later",
+        "Too many requests",
+        "message cap",
+        "upgrade to continue",
+        "You're out of",
+        "temporarily unavailable",
+        "已达到",
+        "使用上限",
+        "请求过多",
+        "稍后再试",
+        "暂时不可用",
+        "升级以继续"
+      ]
+    },
+    "error": {
+      "purpose": "Copy used to DESCRIBE an error to a human. Deliberately broad, and therefore NOT safe as an abort trigger.",
+      "patterns": [
+        "Something went wrong",
+        "network error",
+        "There was an error",
+        "Error generating",
+        "Failed to generate",
+        "Unable to load",
+        "conversation not found",
+        "已意外停止",
+        "出了点问题",
+        "网络错误",
+        "生成出错",
+        "无法加载",
+        "未找到对话"
+      ]
+    },
+    "errorFatal": {
+      "purpose": "STRICT abort triggers: phrases that ONLY appear when generation genuinely failed. Kept separate from `error` because broad copy catches normal UI -- a live run was wrongly aborted by the single word meaning 'retry', which ChatGPT also renders in ordinary chrome. Aborting a valid answer is a worse failure than missing a rare error, so this list stays narrow.",
+      "patterns": [
+        "Something went wrong",
+        "There was an error generating",
+        "Error generating a response",
+        "Failed to generate a response",
+        "conversation not found",
+        "NetworkError when attempting to fetch",
+        "生成回复时出错",
+        "生成响应时出错",
+        "未找到对话",
+        "网络错误，请重试"
+      ]
+    },
+    "contextWarning": {
+      "purpose": "Context-pressure signals; feed the Worker Rotation decision.",
+      "patterns": [
+        "This conversation is getting long",
+        "maximum context",
+        "context limit",
+        "start a new chat",
+        "reached the maximum length",
+        "对话过长",
+        "上下文长度",
+        "上下文上限",
+        "开始新对话",
+        "已达到最大长度"
+      ]
+    }
+  },
+
+  "discovery": {
+    "$comment": "Hints for the PHASE 3 probe. These are NOT selectors used by the adapter -- they only tell the probe which attribute families are worth dumping so real anchors can be found.",
+    "attributeFamilies": [
+      "data-testid",
+      "data-message-author-role",
+      "data-message-id",
+      "aria-label",
+      "role",
+      "contenteditable",
+      "id"
+    ]
+  }
+}

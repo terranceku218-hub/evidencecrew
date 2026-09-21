@@ -1,0 +1,586 @@
+/* EvidenceCrew V0.1 - plain CSS, no framework, no build step. */
+
+:root {
+  --bg:        #10131a;
+  --bg2:       #161a23;
+  --bg3:       #1d2230;
+  --line:      #2a3142;
+  --fg:        #e6e9f0;
+  --fg-dim:    #98a1b5;
+  --accent:    #5b9dff;
+  --good:      #3fbf7f;
+  --warn:      #e0a33e;
+  --bad:       #e0605f;
+  --mono:      ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+code, pre, .mono { font-family: var(--mono); }
+
+.hidden { display: none !important; }
+.muted { color: var(--fg-dim); }
+.small { font-size: 11.5px; }
+
+/* ---------------- header ---------------- */
+
+#bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 14px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+
+.brand { display: flex; align-items: center; gap: 8px; min-width: 240px; }
+
+.dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--fg-dim);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+}
+.dot.ok   { background: var(--good); }
+.dot.warn { background: var(--warn); }
+.dot.bad  { background: var(--bad); }
+
+.bar-mid { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
+.bar-right { display: flex; gap: 8px; align-items: center; }
+
+.chip {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg3);
+  white-space: nowrap;
+}
+.chip.ok   { border-color: var(--good); color: var(--good); }
+.chip.warn { border-color: var(--warn); color: var(--warn); }
+.chip.bad  { border-color: var(--bad);  color: var(--bad); }
+
+/* ---------------- controls ---------------- */
+
+button, select, textarea, input {
+  font: inherit;
+  color: var(--fg);
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 10px;
+}
+
+button { cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+button.primary { background: #24405f; border-color: #35618f; }
+button.good    { background: #1e4a35; border-color: #2f7a55; }
+button.warn    { background: #4d3a1c; border-color: #7d6127; }
+button.bad     { background: #4d2323; border-color: #7d3636; }
+button.small   { padding: 3px 8px; font-size: 12px; }
+
+textarea { width: 100%; resize: vertical; line-height: 1.5; }
+select { padding: 4px 6px; }
+
+label.inline { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-dim); font-size: 12px; }
+label.inline input { padding: 0; }
+
+.banner {
+  background: #4d3a1c;
+  border-bottom: 1px solid #7d6127;
+  padding: 6px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: none;
+}
+
+/* ---------------- layout ---------------- */
+
+main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 250px minmax(420px, 1fr) 340px;
+  min-height: 0;
+}
+
+.col {
+  padding: 12px 14px;
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+  min-height: 0;
+}
+#colRight { border-right: none; }
+
+h2 {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--fg-dim);
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+h2:first-child { margin-top: 0; }
+
+.empty { color: var(--fg-dim); padding: 20px 4px; }
+.hint { color: var(--fg-dim); font-size: 12px; }
+.row { display: flex; gap: 8px; align-items: center; margin: 10px 0; flex-wrap: wrap; }
+.row.tight { margin: 4px 0; }
+
+/* ---------------- lists ---------------- */
+
+.list { list-style: none; margin: 0; padding: 0; }
+
+.list li {
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 3px;
+}
+.list li:hover { background: var(--bg2); }
+.list li.sel   { background: var(--bg3); border-color: var(--accent); }
+
+.li-title { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.li-sub   { color: var(--fg-dim); font-size: 11.5px; font-family: var(--mono); }
+
+/* ---------------- cards ---------------- */
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+.card .kv { display: grid; grid-template-columns: 116px 1fr; gap: 3px 10px; }
+.card .kv dt { color: var(--fg-dim); }
+.card .kv dd { margin: 0; font-family: var(--mono); font-size: 12px; word-break: break-word; }
+.card h3 { margin: 0 0 8px; font-size: 13px; }
+
+.ctx {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin-bottom: 8px;
+}
+
+/* ---------------- tasks ---------------- */
+
+.tasks { list-style: none; margin: 0; padding: 0; }
+
+.tasks li {
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: var(--bg2);
+}
+
+.tasks li.s-READY       { border-left-color: var(--accent); }
+.tasks li.s-IN_PROGRESS { border-left-color: var(--warn); }
+.tasks li.s-REVIEW      { border-left-color: #a97bff; }
+.tasks li.s-BLOCKED     { border-left-color: var(--bad); }
+.tasks li.s-DONE        { border-left-color: var(--good); opacity: 0.72; }
+.tasks li.s-CANCELLED   { border-left-color: var(--fg-dim); opacity: 0.55; }
+
+.t-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.t-id  { font-family: var(--mono); font-size: 11.5px; color: var(--fg-dim); }
+.t-title { font-weight: 600; }
+.t-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--fg-dim); margin-top: 3px; }
+.t-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+.badge {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.badge.READY       { color: var(--accent); border-color: var(--accent); }
+.badge.IN_PROGRESS { color: var(--warn);   border-color: var(--warn); }
+.badge.REVIEW      { color: #a97bff;       border-color: #a97bff; }
+.badge.BLOCKED     { color: var(--bad);    border-color: var(--bad); }
+.badge.DONE        { color: var(--good);   border-color: var(--good); }
+.badge.CANCELLED   { color: var(--fg-dim); }
+
+/* ---------------- diff ---------------- */
+
+pre.diff {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.45;
+  background: #0d1016;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px;
+  max-height: 300px;
+  overflow: auto;
+  margin: 8px 0 0;
+  white-space: pre;
+}
+
+/* ---------------- timeline ---------------- */
+
+#timeline {
+  flex: none;
+  height: 190px;
+  border-top: 1px solid var(--line);
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.tl-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 14px 0;
+}
+.tl-head h2 { margin: 0; }
+
+#eventList {
+  list-style: none;
+  margin: 0;
+  padding: 6px 14px 12px;
+  overflow-y: auto;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  flex: 1;
+}
+
+#eventList li {
+  display: grid;
+  grid-template-columns: 150px 78px 1fr;
+  gap: 10px;
+  padding: 2px 0;
+  border-bottom: 1px solid #1b202b;
+}
+#eventList .lvl-error { color: var(--bad); }
+#eventList .lvl-warn  { color: var(--warn); }
+#eventList .lvl-ok    { color: var(--good); }
+#eventList .src       { color: var(--fg-dim); }
+
+/* ---------------- overlay ---------------- */
+
+.busy {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 10, 15, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.busy-box {
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 20px 24px;
+  max-width: 480px;
+  text-align: center;
+}
+
+.spinner {
+  width: 26px; height: 26px;
+  margin: 0 auto 12px;
+  border: 3px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast {
+  position: fixed;
+  bottom: 210px;
+  right: 20px;
+  max-width: 420px;
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 14px;
+  z-index: 60;
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.toast.bad  { border-color: var(--bad); }
+.toast.good { border-color: var(--good); }
+
+.warnText { color: var(--warn); }
+.badText  { color: var(--bad); }
+.goodText { color: var(--good); }
+
+/* ==========================================================================
+   V0.2 protocol surfaces: Seats, Run, Evidence Card
+   ==========================================================================
+
+   The Evidence Card is the product of a run, so its marks are the most important
+   thing on the page and are colour-coded by MEANING, never decoration:
+     ok      green  - recorded, and it checks out
+     bad     red    - recorded, and it is a problem
+     absent  grey   - NOT RECORDED (a dash, never a tick)
+     n/a     dim    - does not apply to this run
+   Keeping `absent` grey rather than red is deliberate: "we did not record this"
+   and "we recorded this and it is wrong" are different claims.                */
+
+.seat {
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-left-color: var(--accent);
+  border-radius: 6px;
+  padding: 7px 9px;
+  margin-bottom: 6px;
+  background: var(--bg3);
+}
+.seat.unavailable { border-left-color: var(--fg-dim); opacity: 0.85; }
+.seat-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.seat-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11.5px; margin-top: 3px; }
+
+.ev-list { margin-bottom: 8px; }
+.ev-item {
+  display: flex; gap: 8px; align-items: center;
+  padding: 4px 6px; border-radius: 5px; cursor: pointer;
+  border: 1px solid transparent;
+}
+.ev-item:hover { background: var(--bg2); border-color: var(--line); }
+
+.ev-pill {
+  font-family: var(--mono); font-size: 10.5px;
+  padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line);
+}
+.ev-pill-verified   { color: var(--good); border-color: var(--good); }
+.ev-pill-partial    { color: var(--warn); border-color: var(--warn); }
+.ev-pill-unverified { color: var(--bad);  border-color: var(--bad); }
+.ev-pill-blocked    { color: var(--bad);  border-color: var(--bad); background: #331c1c; }
+
+.evidence-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg2);
+  margin-bottom: 12px;
+}
+
+.ev-head {
+  display: flex; align-items: baseline; gap: 8px;
+  padding-bottom: 6px; margin-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.ev-status { font-family: var(--mono); font-weight: 700; font-size: 13px; letter-spacing: 0.06em; }
+.ev-head-verified   .ev-status { color: var(--good); }
+.ev-head-partial    .ev-status { color: var(--warn); }
+.ev-head-unverified .ev-status { color: var(--bad); }
+.ev-head-blocked    .ev-status { color: var(--bad); }
+
+.ev-legacy {
+  font-family: var(--mono); font-size: 10px;
+  padding: 1px 5px; border: 1px solid var(--warn); color: var(--warn); border-radius: 4px;
+}
+.ev-task { margin-left: auto; color: var(--fg-dim); font-size: 11px; }
+.ev-headline { margin: 0 0 8px; font-size: 12.5px; color: var(--fg-dim); }
+
+.ev-grid { display: flex; flex-direction: column; gap: 2px; }
+.ev-row {
+  display: grid;
+  grid-template-columns: 18px 132px 1fr;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 12px;
+  padding: 2px 0;
+}
+.ev-mark { font-family: var(--mono); text-align: center; font-weight: 700; }
+.ev-label { color: var(--fg-dim); }
+.ev-value { font-family: var(--mono); font-size: 11.5px; word-break: break-word; }
+
+.ev-ok     .ev-mark, .ev-ok     .ev-value { color: var(--good); }
+.ev-bad    .ev-mark, .ev-bad    .ev-value { color: var(--bad); }
+.ev-absent .ev-mark { color: var(--fg-dim); }
+.ev-absent .ev-value { color: var(--fg-dim); font-style: italic; }
+.ev-na     .ev-mark, .ev-na     .ev-value { color: var(--fg-dim); opacity: 0.7; }
+
+.ev-warn { font-size: 11.5px; padding: 5px 7px; border-radius: 5px; margin-bottom: 5px; }
+.ev-warn-info  { background: #1c2532; color: var(--fg-dim); border-left: 3px solid var(--accent); }
+.ev-warn-warn  { background: #2c2718; color: var(--warn); border-left: 3px solid var(--warn); }
+.ev-warn-error { background: #2c1c1c; color: var(--bad); border-left: 3px solid var(--bad); }
+
+.ev-legend {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line);
+  font-size: 10.5px; color: var(--fg-dim);
+}
+.ev-legend b { font-family: var(--mono); color: var(--fg); }
+
+.inbox-item {
+  border: 1px solid var(--warn);
+  border-radius: 6px;
+  padding: 8px 9px;
+  margin-bottom: 8px;
+  background: var(--bg3);
+}
+.inbox-answer { width: 100%; margin-top: 6px; font-family: var(--mono); font-size: 11.5px; }
+
+/* =====================================================================================
+   UI polish + localisation styles
+   =====================================================================================
+   Appended by the V0.3.2 polish pass. Two things drive every rule here:
+
+   1. DESKTOP-FIRST, BUT NOT DESKTOP-ONLY. The three columns are 220-260 / flex / 260-320, and the right
+      column folds away below 1280 because a squeezed agent team is worse than a hidden one. No mobile
+      layout is attempted: this is a Windows-first developer tool.
+
+   2. STATUS IS NEVER COLOUR ALONE. Every status carries an icon and a word as well (see statusChip in the
+      UI code). These rules style the three signals together, so a status survives greyscale printing and
+      colour blindness, and the word survives both.
+   ===================================================================================== */
+
+/* ---------------------------------------------------------------- layout */
+
+main {
+  grid-template-columns: clamp(220px, 17vw, 260px) minmax(0, 1fr) clamp(260px, 22vw, 320px);
+}
+
+/* Below 1280 the agent team column is the first thing to go: it is reference material, not the work. */
+@media (max-width: 1279px) {
+  main { grid-template-columns: clamp(200px, 20vw, 240px) minmax(0, 1fr); }
+  #colRight { display: none; }
+}
+
+/* 1440 and 1920 widen the centre column rather than stretching the sidebars. */
+@media (min-width: 1600px) {
+  main { grid-template-columns: 260px minmax(0, 1fr) 320px; }
+}
+
+/* Long words and long translated labels must wrap rather than overflow a narrow column. */
+.col, .seat, .ev-row, .t-title, .status { min-width: 0; overflow-wrap: anywhere; }
+
+/* ---------------------------------------------------------------- header extras */
+
+.goal-prompt {
+  margin: 4px 0 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.bar-right .inline select { max-width: 132px; }
+
+/* The language names are Chinese and Japanese, so the control needs a little more room and a font that
+   renders them clearly at small sizes. */
+#language { min-width: 104px; }
+#language option { font-size: 13px; }
+
+/* ---------------------------------------------------------------- status chip
+   Three signals, together: icon, colour, word. The colour is the weakest of the three on purpose. */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 8px 1px 6px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.status.small { font-size: 11px; padding: 0 7px 0 5px; line-height: 16px; }
+.status-icon { font-size: 11px; opacity: 0.95; }
+
+.status.is-good { color: #7ee0a8; background: rgba(126, 224, 168, 0.10); border-color: rgba(126, 224, 168, 0.35); }
+.status.is-bad { color: #ff9d9d; background: rgba(255, 157, 157, 0.10); border-color: rgba(255, 157, 157, 0.35); }
+.status.is-busy { color: #ffd479; background: rgba(255, 212, 121, 0.10); border-color: rgba(255, 212, 121, 0.32); }
+.status.is-idle { color: var(--muted); background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.12); }
+
+/* The one place a stronger green is allowed: a VERIFIED Evidence Record. It is the product's headline
+   claim, so it earns the accent, and it is still restrained enough to sit above a table of marks. */
+.ev-head-verified {
+  border-left: 3px solid #4ec78a;
+  background: linear-gradient(90deg, rgba(78, 199, 138, 0.10), transparent 60%);
+}
+
+/* ---------------------------------------------------------------- seat cards */
+
+.seat-role { display: flex; flex-direction: column; gap: 1px; }
+.seat-duty { font-size: 11px; color: var(--muted); }
+.seat-disabled { opacity: 0.85; }
+.seat-disabled .seat-role strong { color: var(--muted); }
+
+/* ---------------------------------------------------------------- evidence card */
+
+.ev-value { font-weight: 500; }
+.ev-row[title] { cursor: help; }
+
+/* Technical details: collapsed, closed by default, and deliberately plain. A normal user should be able to
+   answer "did it work" without ever opening this. */
+.ev-tech { margin-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 8px; }
+.ev-tech > summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+  list-style: none;
+}
+.ev-tech > summary::-webkit-details-marker { display: none; }
+.ev-tech > summary::before { content: '\25b8 '; }
+.ev-tech[open] > summary::before { content: '\25be '; }
+.ev-tech[open] > summary { color: var(--fg); }
+
+.ev-tech-table { width: 100%; border-collapse: collapse; margin: 6px 0; }
+.ev-tech-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 2px 8px 2px 0;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.ev-tech-table td { padding: 2px 0; overflow-wrap: anywhere; }
+
+/* ---------------------------------------------------------------- logs, collapsed */
+
+#timeline.collapsed #tlBody { display: none; }
+#timeline.collapsed { padding-bottom: 6px; }
+#timeline .tl-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#timeline .tl-head h2 { margin: 0; }
+button.ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--fg);
+}
+button.ghost:hover { border-color: rgba(255, 255, 255, 0.32); }
+
+/* ---------------------------------------------------------------- light theme
+   The tool ships dark by default; these overrides keep the new elements legible if a light theme is
+   applied, without duplicating every rule. */
+
+@media (prefers-color-scheme: light) {
+  .status.is-good { color: #1d7a4b; background: rgba(29, 122, 75, 0.10); border-color: rgba(29, 122, 75, 0.30); }
+  .status.is-bad { color: #a32020; background: rgba(163, 32, 32, 0.08); border-color: rgba(163, 32, 32, 0.28); }
+  .status.is-busy { color: #8a5a00; background: rgba(138, 90, 0, 0.10); border-color: rgba(138, 90, 0, 0.26); }
+  .status.is-idle { color: #5a6068; background: rgba(0, 0, 0, 0.03); border-color: rgba(0, 0, 0, 0.12); }
+  .ev-tech { border-top-color: rgba(0, 0, 0, 0.10); }
+}
+

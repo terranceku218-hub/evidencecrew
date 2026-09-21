@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EvidenceCrew</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<!--
+  Layout is a fixed control strip plus a three column workspace.
+  Left  : which project / which workspace  (the context boundary)
+  Centre: the Goal and its Tasks           (the work)
+  Right : current situation                (what the agent is doing right now)
+  Bottom: timeline                         (what already happened)
+-->
+
+<header id="bar">
+  <div class="brand">
+    <span class="dot" id="healthDot"></span>
+    <strong data-i18n="app.title">EvidenceCrew</strong>
+    <span class="muted" id="version">v0.1.0</span>
+  </div>
+
+  <div class="bar-mid">
+    <span class="chip" id="chipHarness" title="Harness health" data-i18n-title="header.harness.title" data-i18n="header.harness">harness: ?</span>
+    <span class="chip" id="chipFrozen" title="Freeze manifest drift check" data-i18n-title="header.frozen.title" data-i18n="header.frozen">frozen: ?</span>
+    <span class="chip" id="chipWorker" title="ChatGPT worker health (not probed until you ask)" data-i18n-title="header.worker.title" data-i18n="header.worker">worker: not probed</span>
+    <span class="chip" id="chipGit" title="Project git state" data-i18n-title="header.git.title">git: -</span>
+  </div>
+
+  <div class="bar-right">
+    <!--
+      Language picker. Each option shows the language in ITS OWN language, because a user looking for their
+      own language should not have to read one they do not have. Switching re-renders in place: no reload,
+      and no server round trip.
+    -->
+    <label class="inline" data-i18n-title="header.language.title" title="Interface language">
+      <span data-i18n="header.language">Language</span>
+      <select id="language"></select>
+    </label>
+    <label class="inline" data-i18n-title="codex.title" title="Use Codex Reviewer">
+      <span id="codexHelp" data-i18n="codex.label">Use Codex Reviewer</span>
+      <select id="codexReview">
+        <option value="OFF" data-i18n="codex.off">Off</option>
+        <option value="ON" data-i18n="codex.on">Auto</option>
+        <option value="REQUIRED" data-i18n="codex.required">Required</option>
+      </select>
+    </label>
+    <label class="inline" title="ADVISOR: nothing runs without you. SAFE_AUTO: reserved for a later version and behaves identically in V0.1." data-i18n-title="autonomy.title">
+      <span data-i18n="autonomy.label">autonomy</span>
+      <select id="autonomy">
+        <option value="ADVISOR">ADVISOR</option>
+        <option value="SAFE_AUTO">SAFE_AUTO</option>
+      </select>
+    </label>
+    <button id="btnPause" class="warn" title="Stop starting new automatic steps. An in-flight ChatGPT turn finishes; the browser is never killed." data-i18n-title="action.pause.title" data-i18n="action.pause">Pause</button>
+    <button id="btnResume" class="good hidden" title="Allow new automatic steps again" data-i18n-title="action.resume.title" data-i18n="action.resume">Resume</button>
+    <button id="btnProbe" title="Ask the ChatGPT worker for a real health check (takes a few seconds)" data-i18n-title="action.probe.title" data-i18n="action.probe">Probe worker</button>
+    <button id="btnRefresh" title="Re-read everything from the harness" data-i18n-title="action.refresh.title" data-i18n="common.refresh">Refresh</button>
+  </div>
+</header>
+
+<div id="pausedBanner" class="banner hidden">
+  <strong>PAUSED</strong>
+  <span data-i18n="banner.paused">No new automated action will start. Running turns finish normally.</span>
+</div>
+
+<main>
+  <!-- ================= LEFT : context ================= -->
+  <section id="colLeft" class="col">
+    <h2 id="panelProjects" data-i18n="panel.projects">Projects</h2>
+    <ul id="projectList" class="list"></ul>
+
+    <h2 id="panelWorkspaces" data-i18n="panel.workspaces">Workspaces</h2>
+    <ul id="workspaceList" class="list"></ul>
+    <p class="hint" id="wsHint" data-i18n="goal.selectProject">Select a project.</p>
+  </section>
+
+  <!-- ================= CENTRE : the work ================= -->
+  <section id="colMid" class="col">
+    <div id="emptyMid" class="empty">
+      Select a project and a workspace to begin.
+    </div>
+
+    <div id="midBody" class="hidden">
+      <h2 id="panelGoal" data-i18n="panel.goal">Goal</h2>
+      <div id="ctxLine" class="ctx"></div>
+      <!--
+        The beginner layer: the nine starting points, the three plain-language choices, and the preview of what
+        they will do. It is filled by /guided.js and sits ABOVE the box, so the question below is answered by
+        picking a starting point rather than by facing an empty textarea.
+      -->
+      <div id="guidedRoot"></div>
+      <!--
+        The most prominent input in the product is a plain question about the outcome, not a task editor.
+        A first-time user should be able to answer it without knowing what an envelope or a seat is.
+      -->
+      <p class="goal-prompt" data-i18n="goal.prompt">What do you want your AI team to do?</p>
+      <textarea id="goalText" rows="4" data-i18n-placeholder="goal.placeholder"
+        placeholder="For example: check the login module for problems, and fix the code if needed."></textarea>
+      <div class="row">
+        <button id="btnSubmitGoal" class="primary" data-i18n="goal.submit">Start</button>
+        <span class="muted" id="goalHint" data-i18n="goal.hint">The planner reads the project state, then proposes tasks. Nothing is executed automatically.</span>
+      </div>
+
+      <div id="goalStatus" class="card hidden"></div>
+      <div id="planCard" class="card hidden"></div>
+
+      <h2 id="panelTasks" data-i18n="panel.tasks">Tasks</h2>
+      <div id="taskFilter" class="row tight">
+        <label class="inline"><input type="checkbox" id="showClosed"> <span data-i18n="task.showClosed">show closed</span></label>
+        <span class="muted" id="taskCount"></span>
+      </div>
+      <ul id="taskList" class="tasks"></ul>
+
+      <div id="taskDetail" class="card hidden"></div>
+    </div>
+  </section>
+
+  <!-- ================= RIGHT : now + protocol ================= -->
+  <section id="colRight" class="col">
+    <h2 id="panelSeats" data-i18n="panel.seats">Agent Team</h2>
+    <div id="seatsCard" class="card"></div>
+
+    <h2 data-i18n="panel.run">Run</h2>
+    <!-- Advanced view only: raw turn and correlation facts, not the answer to "did it work". -->
+    <div id="runCard" class="card" data-advanced-only></div>
+
+    <h2 id="panelEvidence" data-i18n="panel.evidence">Evidence</h2>
+    <!--
+      Advanced view only: the raw record list is a selector for auditing, not an answer to "did it work".
+    -->
+    <div id="evidenceList" class="ev-list" data-advanced-only></div>
+    <!--
+      VISIBLE IN BOTH VIEWS, and that is a deliberate change of position.
+      
+      It used to carry `data-advanced-only`, on the reasoning that run ids, hashes and transports should not
+      greet a first-time user. That reasoning was right about the DRAWER and wrong about the CARD: the card is
+      the product's answer to "did it work", and V0.3.3 adds a beginner summary at the top of it ("is this
+      result trustworthy?"). Hiding the card in Beginner hid the summary with it - a feature written for
+      beginners that only advanced users could reach, which is the opposite of what it is for.
+      
+      The technical content is still gated, one level down and more precisely: everything with run ids, hashes
+      and transports lives inside the collapsed `<details class="ev-tech">` drawer, which a beginner has to
+      open on purpose. So the beginner gets the verdict and the marks, and the audit trail is one click away
+      rather than absent.
+    -->
+    <div id="evidenceCard" class="evidence-card"></div>
+
+    <h2 data-i18n="panel.humanInbox">Human seat inbox</h2>
+    <div id="humanInbox" class="card"></div>
+
+    <h2 data-i18n="panel.now">Now</h2>
+    <div id="jobCard" class="card"></div>
+
+    <h2 data-i18n="panel.worker">Current worker</h2>
+    <div id="workerCard" class="card"></div>
+
+    <h2 data-i18n="panel.diff" data-advanced-only>Diff</h2>
+    <div class="row tight" data-advanced-only>
+      <button id="btnDiff" class="small" data-i18n="diff.load">Load diff</button>
+      <span class="muted" id="diffHint" data-i18n="seat.permissions.readOnly">read-only</span>
+    </div>
+    <div id="diffCard" class="card" data-advanced-only></div>
+  </section>
+</main>
+
+<!-- ================= BOTTOM : logs, collapsed ================= -->
+<!--
+  Collapsed by default. Log lines come from providers, the shell, git and the system, so they are not
+  translated, and a wall of English log text is the wrong first impression for a user who just opened the
+  tool. The panel is one click away, and it stays open once opened.
+-->
+<section id="timeline" class="collapsed">
+  <div class="tl-head">
+    <button id="btnToggleLogs" class="small ghost" aria-expanded="false" data-i18n="logs.expand">Show</button>
+    <h2 data-i18n="panel.timeline">Logs</h2>
+    <span class="muted" id="tlNote" data-i18n="run.projected">projected from existing logs at read time</span>
+    <span class="muted small" data-i18n="logs.note">Log lines come from providers, the shell, git and the system. They are not translated.</span>
+  </div>
+  <div id="tlBody">
+    <ol id="eventList"></ol>
+  </div>
+</section>
+
+<!-- blocking overlay for the operations that drive a real browser -->
+<div id="busy" class="busy hidden">
+  <div class="busy-box">
+    <div class="spinner"></div>
+    <strong id="busyTitle">Working…</strong>
+    <p id="busyText" class="muted"></p>
+    <p class="muted small" data-i18n="run.longTurn">A real ChatGPT turn can take a minute or two. The browser window is being driven for real; do not close it.</p>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<!--
+  Script order matters: the engine registers `t`, the catalogues register themselves, and only then may the
+  UI ask for a string. Every locale is loaded eagerly rather than on demand, because they are a few
+  kilobytes, a language switch must be instant and offline, and a failed fetch must not be able to leave
+  the interface half-translated.
+-->
+<script src="/i18n/index.js"></script>
+<script src="/i18n/locales/en.js"></script>
+<script src="/i18n/locales/zh-CN.js"></script>
+<script src="/i18n/locales/zh-TW.js"></script>
+<script src="/i18n/locales/ja.js"></script>
+<script src="/app.js"></script>
+<script src="/protocol-ui.js"></script>
+<!-- The guided layer. Last: it reads the catalogue, wraps the app's own submit path, and needs the markup above. -->
+<script src="/guided.js"></script>
+</body>
+</html>

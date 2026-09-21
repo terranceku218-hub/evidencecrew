@@ -1,0 +1,45 @@
+EvidenceCrew
+Copyright 2026 the EvidenceCrew contributors
+
+This product includes software developed as part of the EvidenceCrew project.
+
+--------------------------------------------------------------------------------
+NOT AFFILIATION NOTICE
+--------------------------------------------------------------------------------
+
+EvidenceCrew is an independent open-source project. It is not affiliated with,
+endorsed by, or sponsored by OpenAI, DeepSeek, Google, or any other model or
+browser vendor. It is a client that interoperates with services the user already
+has an account for. No third party has reviewed, approved or supported it.
+
+OpenAI, ChatGPT, Codex, DeepSeek, Google and Chrome are trademarks of their
+respective owners. They are used in this project only to describe what the
+software interoperates with, and their use does not imply any relationship.
+
+--------------------------------------------------------------------------------
+THIRD-PARTY COMPONENTS
+--------------------------------------------------------------------------------
+
+EvidenceCrew itself has no bundled third-party libraries: it depends only on the
+Node.js standard library.
+
+It drives two external programs that are NOT distributed with it and are NOT
+covered by its licence:
+
+  * Google Chrome or Chromium - used as the browser for the ChatGPT worker
+    transport. Governed by its own licence and terms.
+  * @playwright/cli - invoked at run time from the user's own npx cache to drive
+    that browser. Governed by its own licence (Apache-2.0).
+
+It also communicates with remote services chosen and configured by the user
+(for example the DeepSeek API), which are governed by their own terms of service.
+No remote service is bundled, redistributed or sublicensed by this project.
+
+--------------------------------------------------------------------------------
+LICENCE
+--------------------------------------------------------------------------------
+
+Licensed under the Apache License, Version 2.0. The full text is in the LICENSE
+file in this directory. This NOTICE file adds no restriction of any kind to that
+licence; it exists only to record attribution and the affiliation disclaimer
+above, as Apache-2.0 section 4(d) permits.

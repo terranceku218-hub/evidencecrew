@@ -1,0 +1,53 @@
+{
+  "name": "evidencecrew",
+  "version": "0.1.0",
+  "private": false,
+  "type": "commonjs",
+  "description": "EvidenceCrew - a local control plane for verifiable multi-agent work: DeepSeek plans, ChatGPT works, Codex reviews when you want it, Evidence proves what happened.",
+  "keywords": [
+    "agents",
+    "multi-agent",
+    "orchestration",
+    "evidence",
+    "verification",
+    "local-first",
+    "control-plane",
+    "agent-seat"
+  ],
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "workbench/server/entry.js",
+  "scripts": {
+    "start": "node workbench/server/entry.js",
+    "setup": "node tools/setup-check.js",
+    "test": "node tools/run-tests.js",
+    "demo": "node tools/demo.js",
+    "scan": "node scripts/public-safety-scan.js ."
+  },
+  "$comment_version": [
+    "0.1.0 is the PUBLIC version, and it is the only version number a user or an issue report should ever",
+    "see. Development happens under separate internal milestone numbers which are deliberately NOT named",
+    "here: a milestone number in a shipped file goes stale the moment the next milestone lands, and a reader",
+    "who quotes it in an issue is describing a tree that does not exist. docs/RELEASE_CHECKLIST.md and the",
+    "maintainer notes carry the internal numbering.",
+    "",
+    "0.x is deliberate. The protocol, the Evidence Record shape and the seat registry are implemented and",
+    "tested, but they have not survived a second independent implementation, and calling that 1.0 would",
+    "overstate it."
+  ],
+  "$comment_dependencies": [
+    "DELIBERATELY EMPTY, AND THIS IS A FEATURE.",
+    "",
+    "The harness, the browser worker adapter and the workbench are all zero-dependency: Node built-in",
+    "modules only. That is why `npm install` finishes instantly and why the stack runs offline, on a",
+    "machine that cannot reach npm, and from a checkout on a USB stick.",
+    "",
+    "It also means there is no lockfile to audit and no transitive dependency to trust. If you are",
+    "considering a change that adds a dependency, read CONTRIBUTING.md first: the answer is usually no, and",
+    "the reason is that this tool drives a logged-in browser session and writes to your project."
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}

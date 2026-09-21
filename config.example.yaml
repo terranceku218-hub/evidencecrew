@@ -1,0 +1,39 @@
+# =====================================================================================
+# EvidenceCrew - credential file TEMPLATE. EVERY VALUE HERE IS A PLACEHOLDER.
+#
+# Copy this file to  ~/.dsh/.credentials.yaml  and replace the placeholder with your key.
+#
+#   Windows:  %USERPROFILE%\.dsh\.credentials.yaml
+#   macOS / Linux:  ~/.dsh/.credentials.yaml
+#
+# WHY A FILE OUTSIDE THE REPOSITORY
+#   The key is read at runtime from your home directory, never from the checkout, so it cannot be
+#   committed by accident. `.credentials.yaml` is also listed in .gitignore and in the safety scanner,
+#   because the accident this prevents is the one that matters most.
+#
+#   Alternatively, set the environment variable instead and ignore this file entirely:
+#     DEEPSEEK_API_KEY=<your key>
+#   The environment takes precedence over this file.
+#
+# NEVER put a real key in this template, in a screenshot, in an issue, or in a commit.
+# =====================================================================================
+
+# The supervisor seat's credential. Required for any goal that needs planning or review.
+DEEPSEEK_API_KEY=
+
+# Optional: override the API base URL. The default is https://api.deepseek.com
+# DEEPSEEK_BASE_URL=
+
+# =====================================================================================
+# What is deliberately NOT in this file, and why
+#
+# ChatGPT:  there is no credential to put here. The worker seat drives a real browser session that YOU
+#           log in to yourself, in the worker's own profile directory. No cookie, token or password is
+#           ever read, stored or copied by this software. See SECURITY.md.
+#
+# Codex:    the reviewer is optional and OFF by default. If you enable it, its own tooling manages its own
+#           authentication, in its own home directory. This project does not read or store those tokens.
+#
+# Anything else: a new provider is added as a transport with declared capabilities. If it needs a
+#           credential, it reads it from THIS file or from the environment, and it never logs it.
+# =====================================================================================

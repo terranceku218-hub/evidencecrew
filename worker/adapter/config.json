@@ -1,0 +1,28 @@
+{
+  "$comment": "Runtime configuration for the ChatGPT Web Worker adapter. Relative paths are resolved against the worker directory by lib.js, so a clone runs from anywhere. ASCII-only: see the encoding note in lib.js.",
+  "worker": {
+    "sessionName": "chatgpt-worker",
+    "browserChannel": "chrome",
+    "headed": true,
+    "baseUrl": "https://chatgpt.com/"
+  },
+  "paths": {
+    "profileDir": "profile",
+    "stateDir": "state",
+    "logsDir": "logs",
+    "workerLedger": "state/CHATGPT_WORKERS.md",
+    "pwcLauncher": "bin/pwc.ps1",
+    "$comment_pwc": "pwcLauncher is REQUIRED: it is the PowerShell launcher the adapter calls to run @playwright/cli with a pinned session name. The relative path is resolved against the worker directory by lib.js."
+  },
+  "limits": {
+    "$comment_timeouts": "sendTimeoutMs bounds how long a committed packet may take to APPEAR as a user turn, and returns as soon as it is seen. completeTimeoutMs bounds wait_complete and must stay below the harness cliTimeoutMs, which kills the worker CLI process outright.",
+    "maxWorkerRounds": 8,
+    "maxRetryPerTask": 3,
+    "sendTimeoutMs": 240000,
+    "completeTimeoutMs": 280000,
+    "pollIntervalMs": 2500,
+    "stableSamples": 3,
+    "cliTimeoutMs": 120000,
+    "settleTimeoutMs": 30000
+  }
+}

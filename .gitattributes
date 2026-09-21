@@ -1,0 +1,22 @@
+# Line endings: store exactly the bytes that were audited.
+#
+# WHY THIS FILE EXISTS, AND WHY IT IS NOT DECORATION
+#
+# tools/TREE_MANIFEST.json is a byte-for-byte inventory of this release, and tools/check-tree-manifest.js
+# verifies a working copy against it. Without a rule here, git normalises line endings in both directions:
+# it stores LF in the repository and writes CRLF to the working tree on Windows. A fresh clone then has
+# different byte counts from the manifest on EVERY text file, so the shipped checker reports that the tree
+# does not match its own published inventory - on a clone that is perfectly correct.
+#
+# That was measured, not predicted: staging README.md with core.autocrlf unset produced a 22,958-byte blob
+# for a 23,345-byte file. The inventory would have failed in every clone on the platform this project is
+# built for.
+#
+# `text=auto eol=lf` stores LF and checks out LF everywhere, so the working tree, the blob and the manifest
+# all agree. Line endings stay uniform across platforms and the shipped manifest keeps meaning something.
+#
+# Binary assets are named explicitly so their bytes are never touched.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.svg text eol=lf

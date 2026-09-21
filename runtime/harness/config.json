@@ -1,0 +1,78 @@
+{
+  "$comment": [
+    "GLOBAL harness configuration for the multi-project Agent Harness.",
+    "",
+    "PATHS ARE RELATIVE TO THIS DIRECTORY on purpose. In the maintainer instance they are absolute,",
+    "which is exactly what stops a clone from working on another machine. lib/paths.js resolves every",
+    "relative value against the harness root, and an absolute value is still honoured as-is, so this",
+    "file is portable without any code above it knowing the difference.",
+    "",
+    "ASCII-ONLY. On Windows, PowerShell Get-Content defaults to the system ANSI code page, so a",
+    "scripted Get-Content/Set-Content round-trip on UTF-8 source silently destroys non-ASCII",
+    "characters and the damage is lossy. Keeping tool source ASCII makes such a round-trip a no-op."
+  ],
+  "harness": {
+    "name": "agent-harness",
+    "version": "2.0.1",
+    "description": "Multi-project Agent Harness: supervisor planning, worker dispatch, workspace and task registry. Bundled with EvidenceCrew."
+  },
+  "paths": {
+    "harnessRoot": ".",
+    "registry": "registry",
+    "projectRegistry": "registry/projects.json",
+    "workerPool": "registry/workers.json",
+    "logsDir": "logs",
+    "templatesDir": "templates",
+    "$comment_worker": [
+      "The ChatGPT Web Worker lives outside this harness and is treated as a protected resource. The",
+      "harness drives it through its public CLI surface and never edits it. One browser session and one",
+      "persistent profile are shared across projects because the ChatGPT login is global; isolation",
+      "between projects happens at the CONVERSATION level."
+    ],
+    "workerDir": "../../worker",
+    "workerCli": "../../worker/adapter/cw.js",
+    "workerAdapterDir": "../../worker/adapter",
+    "workerVerify": "../../worker/bin/verify-all.ps1",
+    "workerSessionName": "chatgpt-worker"
+  },
+  "projectDefaults": {
+    "$comment": "Applied when a project PROJECT.yaml omits a field. A project may override any of these.",
+    "stateDirName": ".ai",
+    "worker": {
+      "backend": "chatgpt-web",
+      "max_rounds": 8,
+      "reuse_conversation": true,
+      "role": "general"
+    },
+    "git": {
+      "enabled": false
+    }
+  },
+  "limits": {
+    "maxRetryPerTask": 3,
+    "maxWorkerRounds": 8,
+    "cliTimeoutMs": 300000
+  },
+  "safety": {
+    "$comment": [
+      "GLOBAL PERMANENT RULES, enforced in code rather than by convention. forbiddenRoots lists",
+      "directories a project may never be registered from: a project root is where the agents are",
+      "allowed to READ AND WRITE, so pointing one at a filesystem root would hand them the machine.",
+      "The maintainer instance also lists personal folders; they are absent here because paths differ",
+      "per machine and os.homedir() is checked at runtime as well."
+    ],
+    "forbiddenRoots": [
+      "C:\\",
+      "C:\\Users",
+      "C:\\Windows",
+      "C:\\Program Files",
+      "C:\\Program Files (x86)"
+    ],
+    "requireExplicitApprovalForForbiddenRoot": true,
+    "removeRegistrationNeverDeletesFiles": true,
+    "neverReadOtherChromeProfiles": true,
+    "loginAndCaptchaAreHumanOnly": true,
+    "maxAutoRetry": 3,
+    "crossProjectAccessRequiresApproval": true
+  }
+}
