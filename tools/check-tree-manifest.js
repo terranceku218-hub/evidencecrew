@@ -49,6 +49,13 @@ const EXCLUDED = [
    * "added" files and fail on a tree that had not actually changed.
    */
   /(^|\/)evidence\/EV-/,
+  /**
+   * A generated lockfile, excluded because `npm install` creates one even for a project with no dependencies.
+   * Without this, anyone who ran `npm install` - which is the README's own second step - would see the checker
+   * report an "added" file on a clone that is correct.
+   */
+  /(^|\/)package-lock\.json$/,
+  /(^|\/)npm-shrinkwrap\.json$/,
   /(^|\/)node_modules\//,
   /(^|\/)\.playwright-cli\//,
   /(^|\/)\.state\//,
